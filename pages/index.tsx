@@ -1,7 +1,7 @@
-// Exemplo de Server side render
-import { GetServerSideProps } from "next";
+// Exemplo de Static site generation
+import { GetStaticProps } from "next";
 
-export default function Home({ repositories }) {
+export default function Home({ repositories, date }) {
   return (
     <div>  
       <div>Home</div>
@@ -10,11 +10,12 @@ export default function Home({ repositories }) {
           <li key={repo}>{repo}</li>
         ))}
       </ul>
+      <p>{date}</p>
     </div>
   )
 }
 
-export const getServerSideProps: GetServerSideProps = async () => {
+export const getStaticProps: GetStaticProps = async () => {
   const response = await fetch('https://api.github.com/users/ruanSignori/repos');
   
   const data = await response.json();
@@ -22,7 +23,9 @@ export const getServerSideProps: GetServerSideProps = async () => {
 
   return {
     props: {
-      repositories: repoName
-    }
+      repositories: repoName,
+      date: new Date().toISOString() 
+    },
+    revalidate: 5
   }
 }
